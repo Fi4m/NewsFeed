@@ -19,7 +19,7 @@ class SideMenuTVC: UITableViewController {
     var selectedCategory: String!
     
     var categories = ["business", "entertainment", "general", "health", "science", "sports", "technology"]
-    var sources: [[String:Any]] = [] {
+    var sources: [Source] = [] {
         didSet {
             tableView.reloadData()
         }
@@ -67,7 +67,7 @@ class SideMenuTVC: UITableViewController {
         if sideMenuType == .categorySelection {
             cell.textLabel?.text = categories[indexPath.row]
         } else {
-            cell.textLabel?.text = sources[indexPath.row]["name"] as? String
+            cell.textLabel?.text = sources[indexPath.row].name
         }
 
         return cell
@@ -82,7 +82,7 @@ class SideMenuTVC: UITableViewController {
             self.navigationController?.pushViewController(destination, animated: true)
         } else {
             self.revealViewController().revealToggle(self)
-            NotificationCenter.default.post(name: NSNotification.Name("SourceSelected"), object: nil, userInfo: ["source": sources[indexPath.row]["id"] as! String])
+            NotificationCenter.default.post(name: NSNotification.Name("SourceSelected"), object: nil, userInfo: ["source": sources[indexPath.row].id])
             self.navigationController?.popViewController(animated: true)
         }
     }
@@ -90,7 +90,9 @@ class SideMenuTVC: UITableViewController {
     func callSources(category: String) {
         WebService.shared.callAPI(.get, api: .sources, parameters: ["country": "us", "category": category]) { (response) in
             unowned let this = self
-            this.sources = response["sources"] as! [[String : Any]]
+            print(response)
+            this.sources = Source.populateArray(response["sources"] as! [[String : Any]])
+//            this.sources = response["sources"] as! [[String : Any]]
         }
     }
  

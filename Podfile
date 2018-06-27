@@ -8,6 +8,8 @@ target 'NewsFeed' do
   pod 'TPKeyboardAvoiding'
   pod 'Kingfisher'
   pod 'SWRevealViewController'
+  pod 'Firebase/Core'
+  pod 'Firebase/Auth'
 
   # Pods for NewsFeed
 

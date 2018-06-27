@@ -21,30 +21,47 @@ enum HTTPMethod: String {
     case post = "POST"
 }
 
+
+
 class WebService {
     static let shared = WebService()
     
     let baseURL = "https://newsapi.org/v2/"
     let session = URLSession(configuration: .default)
+    let urlCache = NSCache<NSURL, NSData>()
     
     func callAPI(_ method: HTTPMethod,api: API, parameters: [String:Any]!, completionHandler: @escaping (([String:Any]) -> Void)) {
         var queryString  = ""
         for eachKey in parameters.keys {
             queryString.append("&\(eachKey)=\(parameters[eachKey] as! String)")
         }
+        
         let url = URL(string: "\(baseURL)\(api.rawValue)?apiKey=\(NEWSAPI_API_KEY)\(queryString)")!
         print(url)
-        let dataTask = session.dataTask(with: url) { (data, response, error) in
-            guard error == nil else {
-                return
+        
+        if let cachedData = urlCache.object(forKey: url as NSURL) {
+            let cachedDict = self.parseJSON(data: cachedData as Data)
+            completionHandler(cachedDict)
+        } else {
+            let dataTask = session.dataTask(with: url) { (data, response, error) in
+                unowned let this = self
+                
+                guard error == nil else {
+                    return
+                }
+                this.urlCache.setObject(data! as NSData, forKey: url as NSURL)
+                let dict = this.parseJSON(data: data!)
+                print(dict)
+                
+                DispatchQueue.main.async {
+                    completionHandler(dict)
+                }
             }
-            
-            let dict = try! JSONSerialization.jsonObject(with: data!, options: []) as! [String:Any]
-            print(dict)
-            DispatchQueue.main.async {
-                completionHandler(dict)
-            }
+            dataTask.resume()
         }
-        dataTask.resume()
+    }
+    
+    func parseJSON(data: Data) -> [String:Any] {
+        return try! JSONSerialization.jsonObject(with: data, options: []) as! [String:Any]
     }
 }

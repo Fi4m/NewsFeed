@@ -8,6 +8,7 @@
 
 import UIKit
 import SWRevealViewController
+import FirebaseAuth
 
 class LogInVC: UIViewController {
 
@@ -35,8 +36,16 @@ class LogInVC: UIViewController {
     }
     */
     @IBAction func btnLogInAction(_ sender: UIButton) {
-        let destination = self.storyboard?.instantiateViewController(withIdentifier: "SWRevealViewController") as! SWRevealViewController
-        UIApplication.shared.keyWindow?.rootViewController = destination
-//        self.navigationController?.pushViewController(destination, animated: true)
+        Auth.auth().signIn(withEmail: txtEmail.text!, password: txtPassword.text!) { (user, error) in
+            guard error == nil else {
+                let alertController = UIAlertController(title: "ALERT", message: error!.localizedDescription, preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                alertController.addAction(okAction)
+                self.present(alertController, animated: true, completion: nil)
+                return
+            }
+            let destination = self.storyboard?.instantiateViewController(withIdentifier: "SWRevealViewController") as! SWRevealViewController
+            UIApplication.shared.keyWindow?.rootViewController = destination
+        }
     }
 }
