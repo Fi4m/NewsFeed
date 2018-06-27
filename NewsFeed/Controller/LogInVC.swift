@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SWRevealViewController
 
 class LogInVC: UIViewController {
 
@@ -34,7 +35,8 @@ class LogInVC: UIViewController {
     }
     */
     @IBAction func btnLogInAction(_ sender: UIButton) {
-        let destination = self.storyboard?.instantiateViewController(withIdentifier: "NewsFeedsListingVC") as! NewsFeedsListingVC
-        self.navigationController?.pushViewController(destination, animated: true)
+        let destination = self.storyboard?.instantiateViewController(withIdentifier: "SWRevealViewController") as! SWRevealViewController
+        UIApplication.shared.keyWindow?.rootViewController = destination
+//        self.navigationController?.pushViewController(destination, animated: true)
     }
 }

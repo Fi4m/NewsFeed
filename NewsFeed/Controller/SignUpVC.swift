@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SWRevealViewController
 
 class SignUpVC: UIViewController {
 
@@ -41,8 +42,9 @@ class SignUpVC: UIViewController {
     }
     */
     @IBAction func btnRegisterAction(_ sender: UIButton) {
-        let destination = self.storyboard?.instantiateViewController(withIdentifier: "NewsFeedsListingVC") as! NewsFeedsListingVC
-        self.navigationController?.pushViewController(destination, animated: true)
+        let destination = self.storyboard?.instantiateViewController(withIdentifier: "SWRevealViewController") as! SWRevealViewController
+        UIApplication.shared.keyWindow?.rootViewController = destination
+//        self.navigationController?.pushViewController(destination, animated: true)
     }
     
     @objc
@@ -74,5 +76,8 @@ extension SignUpVC: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 40
+    }
     
 }

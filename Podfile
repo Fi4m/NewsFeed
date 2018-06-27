@@ -7,6 +7,7 @@ target 'NewsFeed' do
   
   pod 'TPKeyboardAvoiding'
   pod 'Kingfisher'
+  pod 'SWRevealViewController'
 
   # Pods for NewsFeed
 

@@ -12,6 +12,8 @@ let NEWSAPI_API_KEY = "1f013561bdd14bddaa9e60ef255a1b04"
 
 enum API: String {
     case topHeadlines = "top-headlines"
+    case everything = "everything"
+    case sources = "sources"
 }
 
 enum HTTPMethod: String {
@@ -30,7 +32,9 @@ class WebService {
         for eachKey in parameters.keys {
             queryString.append("&\(eachKey)=\(parameters[eachKey] as! String)")
         }
-        let dataTask = session.dataTask(with: URL(string: "\(baseURL)\(api.rawValue)?apiKey=\(NEWSAPI_API_KEY)&country=in\(queryString)")!) { (data, response, error) in
+        let url = URL(string: "\(baseURL)\(api.rawValue)?apiKey=\(NEWSAPI_API_KEY)\(queryString)")!
+        print(url)
+        let dataTask = session.dataTask(with: url) { (data, response, error) in
             guard error == nil else {
                 return
             }
