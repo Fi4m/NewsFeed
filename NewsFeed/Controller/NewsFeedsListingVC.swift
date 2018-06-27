@@ -56,6 +56,7 @@ class NewsFeedsListingVC: UIViewController {
     @objc
     func sourceSelected(_ sender: Notification) {
         selectedSource = sender.userInfo!["source"] as! String
+        tblNewsFeed.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
         callEverything(page: 1)
     }
     
@@ -70,7 +71,7 @@ class NewsFeedsListingVC: UIViewController {
     }
     
     func callTopHeadlines(page: Int) {
-        WebService.shared.callAPI(.get, api: .topHeadlines, parameters: ["page": String(page), "country": "us"]) { (response) in
+        WebService.shared.callAPI(.get, api: .topHeadlines, parameters: ["country": "us"]) { (response) in
             unowned let this = self
             print(response)
             this.topHeadlines = NewsFeed.populateArray(response["articles"] as! [[String : Any]])
@@ -180,7 +181,7 @@ extension NewsFeedsListingVC: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let destination = self.storyboard?.instantiateViewController(withIdentifier: "NewsFeedDetailVC") as! NewsFeedDetailVC
-        destination.newsFeed = newsFeeds[indexPath.row]
+        destination.newsFeed = newsFeeds[indexPath.row - 1]
         self.navigationController?.pushViewController(destination, animated: true)
     }
     
